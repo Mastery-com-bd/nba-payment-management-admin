@@ -24,16 +24,16 @@ import { toast } from "sonner";
 
 const Students = () => {
   const [students, setStudents] = useState<TStudent[]>([]);
-    const [loading, setLoading] = useState(true);
-    const [quizToDelete, setQuizToDelete] = useState<string | null>(null);
-    const router = useRouter();
-    const [pagination, setPagination] = useState({
+  const [loading, setLoading] = useState(true);
+  const [quizToDelete, setQuizToDelete] = useState<string | null>(null);
+  const router = useRouter();
+  const [pagination, setPagination] = useState({
       page: 1,
       limit: 10,
       total: 0,
     });
   
-    const fetchQuizzes = async (page = 1, search = "") => {
+  const fetchQuizzes = async (page = 1, search = "") => {
       setLoading(true);
       try {
         const response = await studentApi.getAllStudents({
