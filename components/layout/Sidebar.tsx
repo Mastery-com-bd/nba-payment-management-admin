@@ -1,6 +1,16 @@
 "use client";
 
-import { BarChart3, FileText, Settings, User, Users } from "lucide-react";
+import {
+  BarChart3,
+  CreditCard,
+  FileText,
+  Package,
+  Rss,
+  Settings,
+  SquareChartGantt,
+  User,
+  Users,
+} from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { ServerInfo } from "@/components/shared/ServerInfo";
@@ -19,12 +29,21 @@ import {
 } from "@/components/ui/sidebar";
 
 const navItems = [
+  // { icon: BarChart3, href: "/analytics", label: "Dashboard" },
+  // { icon: Users, href: "/users", label: "Users" },
+  // { icon: FileText, href: "/content", label: "Content" },
+  // { icon: Settings, href: "/settings", label: "Settings" },
+  // { icon: User, href: "/profile", label: "Profile" },
   { icon: BarChart3, href: "/analytics", label: "Dashboard" },
-  { icon: Users, href: "/users", label: "Users" },
-  { icon: FileText, href: "/content", label: "Content" },
-  { icon: Settings, href: "/settings", label: "Settings" },
-  { icon: User, href: "/profile", label: "Profile" },
-  // { icon: Bell, href: "/notifications", label: "Notifications" },
+  { icon: Users, href: "/students", label: "Students" },
+  { icon: Package, href: "/package", label: "Packages" },
+  {
+    icon: SquareChartGantt,
+    href: "/student-package",
+    label: "Student with Package",
+  },
+  { icon: CreditCard, href: "/payment", label: "Payment" },
+  { icon: Rss, href: "/Follow-up", label: "Follow Up" },
 ];
 
 export default function AppSidebar() {
@@ -37,8 +56,8 @@ export default function AppSidebar() {
           <div className="w-8 h-8 rounded-lg bg-primary flex items-center justify-center">
             <div className="w-5 h-5 rounded bg-primary-foreground"></div>
           </div>
-          <span className="font-semibold text-lg group-data-[collapsible=icon]:hidden">
-            WizdomMaster
+          <span className=" group-data-[collapsible=icon]:hidden">
+            NBA Payment Management
           </span>
         </Link>
       </SidebarHeader>
@@ -58,8 +77,7 @@ export default function AppSidebar() {
                     <SidebarMenuButton
                       asChild
                       isActive={isActive}
-                      tooltip={item.label}
-                    >
+                      tooltip={item.label}>
                       <Link href={item.href}>
                         <Icon className="w-4 h-4" />
                         <span>{item.label}</span>

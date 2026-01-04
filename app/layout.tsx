@@ -5,7 +5,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Admin Dashboard - Analytics & Management",
+  title: "NBA Payment Management",
   description: "Modern admin dashboard for managing your platform.",
 };
 
