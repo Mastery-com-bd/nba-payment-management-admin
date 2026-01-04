@@ -1,0 +1,133 @@
+"use client";
+
+import { Check, ChevronsUpDown, Loader2 } from "lucide-react";
+import * as React from "react";
+
+import { Button } from "@/components/ui/button";
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+} from "@/components/ui/command";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { cn } from "@/lib/utils";
+
+export interface ComboboxOption {
+  value: string;
+  label: string;
+}
+
+interface ComboboxProps {
+  options: ComboboxOption[];
+  value?: string;
+  onValueChange?: (value: string) => void;
+  onSearch?: (searchTerm: string) => void;
+  placeholder?: string;
+  searchPlaceholder?: string;
+  emptyText?: string;
+  className?: string;
+  disabled?: boolean;
+  loading?: boolean;
+}
+
+export function Combobox({
+  options,
+  value,
+  onValueChange,
+  onSearch,
+  placeholder = "Select option...",
+  searchPlaceholder = "Search...",
+  emptyText = "No option found.",
+  className,
+  disabled = false,
+  loading = false,
+}: ComboboxProps) {
+  const [open, setOpen] = React.useState(false);
+  const [searchTerm, setSearchTerm] = React.useState("");
+
+  const selectedOption = options.find((option) => option.value === value);
+
+  // // Debounce search
+  // React.useEffect(() => {
+  //   if (onSearch) {
+  //     const timer = setTimeout(() => {
+  //       onSearch(searchTerm);
+  //     }, 300);
+  //     return () => clearTimeout(timer);
+  //   }
+  // }, [searchTerm, onSearch]);
+
+  const handleSearch = (search: string) => {
+    setSearchTerm(search);
+    onSearch?.(search);
+  };
+
+  return (
+    <Popover open={open} onOpenChange={setOpen}>
+      <PopoverTrigger asChild>
+        <Button
+          variant="outline"
+          role="combobox"
+          aria-expanded={open}
+          className={cn("w-full justify-between", className)}
+          disabled={disabled}
+        >
+          {selectedOption ? selectedOption.label : placeholder}
+          <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+        </Button>
+      </PopoverTrigger>
+      <PopoverContent
+        className="w-[--radix-popover-trigger-width] p-0"
+        align="start"
+      >
+        <Command shouldFilter={!onSearch}>
+          <CommandInput
+            placeholder={searchPlaceholder}
+            value={searchTerm}
+            onValueChange={handleSearch}
+          />
+          <CommandList>
+            {loading ? (
+              <div className="flex items-center justify-center py-6">
+                <Loader2 className="h-4 w-4 animate-spin" />
+              </div>
+            ) : (
+              <>
+                <CommandEmpty>{emptyText}</CommandEmpty>
+                <CommandGroup>
+                  {options.map((option) => (
+                    <CommandItem
+                      key={option.value}
+                      value={option.label}
+                      onSelect={() => {
+                        onValueChange?.(
+                          option.value === value ? "" : option.value
+                        );
+                        setOpen(false);
+                      }}
+                    >
+                      <Check
+                        className={cn(
+                          "mr-2 h-4 w-4",
+                          value === option.value ? "opacity-100" : "opacity-0"
+                        )}
+                      />
+                      {option.label}
+                    </CommandItem>
+                  ))}
+                </CommandGroup>
+              </>
+            )}
+          </CommandList>
+        </Command>
+      </PopoverContent>
+    </Popover>
+  );
+}
