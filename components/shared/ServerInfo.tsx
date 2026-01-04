@@ -9,6 +9,7 @@ import { useEffect, useState } from "react";
 interface ServerHealth {
   success: boolean;
   message: string;
+  uptime: string;
   timestamp: string;
   environment: string;
 }
@@ -22,8 +23,9 @@ export function ServerInfo() {
     const fetchServerHealth = async () => {
       try {
         const response = await fetch(
-          `${process.env.NEXT_PUBLIC_API_BASE_URL}/health`
+          `https://nba-payment-management-backend.vercel.app`,
         );
+
         if (response.ok) {
           const data = await response.json();
           setServerHealth(data);
