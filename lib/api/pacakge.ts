@@ -1,4 +1,6 @@
 import { create } from "domain";
+import { get } from "http";
+import { getEdgePolyfilledModules } from "next/dist/build/webpack/plugins/middleware-plugin";
 import { toast } from "sonner";
 import { success } from "zod";
 
@@ -45,12 +47,6 @@ export const packageApi = {
       credentials: "include",
     });
   },
-  async deletePackage(id: string): Promise<any> {
-    return authFetch(`${API_BASE_URL}/package/${id}`, {
-      method: "DELETE",
-      credentials: "include",
-    });
-  },
   async getPackageById(id: string): Promise<any> {
     return publicFetch(`${API_BASE_URL}/package/${id}`, {
       method: "GET",
@@ -76,31 +72,36 @@ export const packageApi = {
       };
     }
   },
+  async updatePackage(id: string, data: any) {
+    try {
+      const res = await authFetch(`${API_BASE_URL}/package/${id}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data),
+      });
 
-  //   async getQuizById(id: string): Promise<ApiResponse<Quiz>> {
-  //     return publicFetch(`${API_BASE_URL}/quizzes/${id}`);
-  //   },
-
-  //   // ==================== Authenticated Quiz Routes ====================
-  //   async startQuiz(id: string, data?: any): Promise<ApiResponse<QuizAttempt>> {
-  //     return authFetch(`${API_BASE_URL}/quizzes/${id}/start`, {
-  //       method: "POST",
-  //       headers: { "Content-Type": "application/json" },
-  //       body: JSON.stringify(data || {}),
-  //     });
-  //   },
-
-  //   async submitQuiz(
-  //     id: string,
-  //     data: {
-  //       answers: Record<string, any>;
-  //       timeSpent?: number;
-  //     },
-  //   ): Promise<ApiResponse<QuizAttempt>> {
-  //     return authFetch(`${API_BASE_URL}/quizzes/${id}/submit`, {
-  //       method: "POST",
-  //       headers: { "Content-Type": "application/json" },
-  //       body: JSON.stringify(data),
-  //     });
-  //   },
+      return res;
+    } catch (error: any) {
+      console.error("API Error in updatePackage:", error);
+      return {
+        success: false,
+        message: error?.message || "Internal Server Error",
+      };
+    }
+  },
+ async deletePackage(id: string) {
+  try {
+    const res = await authFetch(`${API_BASE_URL}/package/${id}`, {
+      method: "DELETE",
+      credentials: "include",
+    });
+    return res;
+  } catch (error: any) {
+    console.error("API Error in deletePackage:", error);
+    return {
+      success: false,
+      message: error?.message || "Internal Server Error",
+    };
+  }
+ }
 };

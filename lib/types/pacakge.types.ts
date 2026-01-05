@@ -31,9 +31,9 @@ export interface Package {
   name: string;
   description: string;
   packageStatus: "ACTIVE" | "INACTIVE";
-  packageType: "BASIC" | "ADVANCED" | "PREMIUM";
+  packageType: "BASIC" | "ADVANCED" | "CONSULTANCY";
   packagePrice: number;
-  consultancyType: "ONEYEAR" | "SIXMONTH" | "LIFETIME";
+  consultancyType: "ONEYEAR" | "SIXMONTHS";
   durationInMonths: number;
   createdAt: string;
   updatedAt: string;

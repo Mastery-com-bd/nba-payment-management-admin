@@ -6,13 +6,15 @@ import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "../ui/alert-dialog";
 import Link from "next/link";
-import { ArrowLeft, Plus } from "lucide-react";
+import { ArrowLeft, Eye, Plus, Trash } from "lucide-react";
 import { Button } from "../ui/button";
 import { DataTable } from "../shared/DataTable";
+import { EditPackageDialog } from "./EditPackage";
 
 export default function AllPackage() {
   const [packages, setPackages] = useState<TPackage[]>([]);
   const [loading, setLoading] = useState(true);
+  const [refetch, setRefetch] = useState(false);
   const [packageToDelete, setPackageToDelete] = useState<string | null>(null);
   const router = useRouter();
   const [pagination, setPagination] = useState({
@@ -44,7 +46,7 @@ export default function AllPackage() {
   };
   useEffect(() => {
     fetchPackages();
-  }, []);
+  }, [refetch]);
 
   const handlePageChange = (page: number) => {
     fetchPackages(page);
@@ -52,14 +54,6 @@ export default function AllPackage() {
 
   const handleSearch = (query: string) => {
     fetchPackages(1, query);
-  };
-
-  const handleView = (id: string) => {
-    router.push(`/package/${id}`);
-  };
-
-  const handleEdit = (id: string) => {
-    router.push(`/package/${id}/edit`);
   };
 
   const handleDeleteClick = (id: string) => {
@@ -139,22 +133,16 @@ export default function AllPackage() {
       <div className="flex items-center space-x-2">
         <Link href={`/package/${pkg.id}`}>
           <Button variant="outline" size="sm">
-            View
+           <Eye/>
           </Button>
         </Link>
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={() => handleEdit(pkg.id)}
-        >
-          Edit
-        </Button>
+        <EditPackageDialog pack={pkg} setRefetch={setRefetch} />
         <Button
           variant="outline"
           size="sm"
           onClick={() => handleDeleteClick(pkg.id)}
         >
-          Delete
+          <Trash className="text-red-600 cursor-pointer"/>
         </Button>
       </div>
     ),
