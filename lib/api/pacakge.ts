@@ -2,14 +2,6 @@ import { config } from "@/config";
 import { TStudent } from "../types/student.types";
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
-
-
-
-
-
-
-
-
 // Helper function for authenticated requests
 const authFetch = async (url: string, options: RequestInit = {}) => {
   const response = await fetch(url, {
@@ -52,6 +44,18 @@ export const packageApi = {
       credentials: "include",
     });
   },
+  async deletePackage(id: string): Promise<any> {
+    return authFetch(`${API_BASE_URL}/package/${id}`, {
+      method: "DELETE",
+      credentials: "include",
+    });
+  },
+  async getPackageById(id: string): Promise<any> {
+    return publicFetch(`${API_BASE_URL}/package/${id}`, {
+      method: "GET",
+      credentials: "include",
+    });
+  }
 
 //   async getQuizById(id: string): Promise<ApiResponse<Quiz>> {
 //     return publicFetch(`${API_BASE_URL}/quizzes/${id}`);
