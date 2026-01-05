@@ -1,12 +1,16 @@
-"use client"
+"use client";
 
 import { studentApi } from "@/lib/api/studentApi";
-import { TStudent } from "@/lib/types/student.types";
+import {
+  TStudent,
+  TStudentStatus,
+  TWhatsappStatus,
+} from "@/types/student.types";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { Button } from "../ui/button";
 import { ArrowLeft, Edit, Eye, Plus, Trash2 } from "lucide-react";
-import { Badge } from "../ui/badge";
+import { Badge, BadgeProps } from "../ui/badge";
 import Link from "next/link";
 import { DataTable } from "../shared/DataTable";
 import {
@@ -21,44 +25,63 @@ import {
 } from "@/components/ui/alert-dialog";
 import { adminApi } from "@/lib/api/adminApi";
 import { toast } from "sonner";
+import { formatDOB } from "@/utills/dateFormat";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "../ui/tooltip";
+import CreateStudentModal from "./CreateStudentModal";
+import StatusDropdown from "./StatusDropdown";
+
+const STUDENT_STATUSES = [
+  "ACTIVE",
+  "INACTIVE",
+  "BLOCKED",
+  "IRREGULAR",
+  "FAKED",
+] as const;
+
+const WHATSAPP_STATUSES = ["ACTIVE", "INACTIVE", "DONE"] as const;
 
 const Students = () => {
   const [students, setStudents] = useState<TStudent[]>([]);
-    const [loading, setLoading] = useState(true);
-    const [quizToDelete, setQuizToDelete] = useState<string | null>(null);
-    const router = useRouter();
-    const [pagination, setPagination] = useState({
-      page: 1,
-      limit: 10,
-      total: 0,
-    });
-  
-    const fetchQuizzes = async (page = 1, search = "") => {
-      setLoading(true);
-      try {
-        const response = await studentApi.getAllStudents({
-          page,
-          limit: pagination.limit,
-          searchTerm: search || undefined,
-        });
-        if (response?.success) {
-          setStudents(response?.data)
-          setPagination((prev) => ({
-            ...prev,
-            page: response.meta?.page || 1,
-            total: response.meta?.total || 0,
-          }));
-        }
-      } catch (error) {
-        console.error("Failed to fetch quizzes:", error);
-      } finally {
-        setLoading(false);
+  const [loading, setLoading] = useState(true);
+  const [studentDelete, setStudentDelete] = useState<string | null>(null);
+  const router = useRouter();
+  const [pagination, setPagination] = useState({
+    page: 1,
+    limit: 10,
+    total: 0,
+  });
+
+  const fetchQuizzes = async (page = 1, search = "") => {
+    setLoading(true);
+    try {
+      const response = await studentApi.getAllStudents({
+        page,
+        limit: pagination.limit,
+        searchTerm: search || undefined,
+      });
+      if (response?.success) {
+        setStudents(response?.data);
+        setPagination((prev) => ({
+          ...prev,
+          page: response?.meta?.page || 1,
+          total: response?.meta?.total || 0,
+        }));
       }
-    };
-  
-    useEffect(() => {
-      fetchQuizzes();
-    }, []);
+    } catch (error) {
+      console.error("Failed to fetch quizzes:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchQuizzes();
+  }, []);
 
   const handlePageChange = (page: number) => {
     fetchQuizzes(page);
@@ -68,105 +91,147 @@ const Students = () => {
     fetchQuizzes(1, query);
   };
 
-  const handleView = (id: string) => {
-    router.push(`/content/quizzes/${id}`);
-  };
-
-  const handleEdit = (id: string) => {
-    router.push(`/content/quizzes/${id}/edit`);
-  };
-
   const handleDeleteClick = (id: string) => {
-    setQuizToDelete(id);
+    setStudentDelete(id);
   };
 
   const confirmDelete = async () => {
-    if (!quizToDelete) return;
+    if (!studentDelete) return;
 
     try {
-      const response = await adminApi.deleteQuiz(quizToDelete);
+      const response = await studentApi.deleteStudent(studentDelete);
       if (response.success) {
         toast.success("Quiz deleted successfully");
         fetchQuizzes();
       } else {
-        toast.error("Failed to delete quiz");
+        toast.error("Failed to delete student");
       }
     } catch (error) {
-      console.error("Failed to delete quiz:", error);
-      toast.error("Failed to delete quiz");
+      console.error("Failed to delete student:", error);
+      toast.error("Failed to delete student");
     } finally {
-      setQuizToDelete(null);
+      setStudentDelete(null);
     }
   };
 
-  const getDifficultyColor = (difficulty: string) => {
-    switch (difficulty) {
-      case "easy":
-        return "success";
-      case "medium":
-        return "warning";
-      case "hard":
-        return "destructive";
-      default:
-        return "secondary";
+  const updateStatus = async (status: TStudentStatus, id: string) => {
+    const data = { studentStatus: status };
+    try {
+      const response = await studentApi.updateStatus(data, id);
+      if (response.success) {
+        toast.success("student status updated successfully");
+        fetchQuizzes();
+      } else {
+        toast.error("Failed to update student status");
+      }
+    } catch (error) {
+      console.error("Failed to update student status:", error);
+      toast.error("Failed to update student status");
     }
+  };
+
+  const updateWhatsapp = async (status: TWhatsappStatus, id: string) => {
+    const data = { whatsappStatus: status };
+    try {
+      const response = await studentApi.updateWhatsAppStatus(data, id);
+      if (response.success) {
+        toast.success("student whatsapp status updated successfully");
+        fetchQuizzes();
+      } else {
+        toast.error("Failed to update student whatsapp status");
+      }
+    } catch (error) {
+      console.error("Failed to update student whatsapp status:", error);
+      toast.error("Failed to update student whatsapp status");
+    }
+  };
+
+  type BadgeVariant = "default" | "secondary" | "destructive" | "outline";
+
+  const studentStatusVariantMap: Record<TStudentStatus, BadgeVariant> = {
+    ACTIVE: "default",
+    INACTIVE: "secondary",
+    BLOCKED: "destructive",
+    IRREGULAR: "outline",
+    FAKED: "outline",
+  };
+
+  const whatsappStatusVariantMap: Record<TWhatsappStatus, BadgeVariant> = {
+    ACTIVE: "default",
+    INACTIVE: "secondary",
+    DONE: "outline",
   };
 
   const columns = [
     {
-      key: "thumbnail",
-      label: "Thumbnail",
+      key: "fullName",
+      label: "Name",
       render: (studentData: TStudent) => (
-        <div className="w-12 h-8 rounded overflow-hidden bg-muted">
-          {studentData?.studentImage ? (
-            <img
-              src={studentData?.studentImage}
-              alt={studentData.fullName}
-              className="w-full h-full object-cover"
-            />
-          ) : (
-            <div className="w-full h-full flex items-center justify-center text-xs">
-              {studentData?.fullName.charAt(0)}
-            </div>
-          )}
-        </div>
+        <TooltipProvider>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <span className="block max-w-50 truncate cursor-pointer">
+                {studentData.fullName}
+              </span>
+            </TooltipTrigger>
+
+            <TooltipContent>
+              <p>{studentData.fullName}</p>
+            </TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
       ),
     },
     {
-      key: "title",
-      label: "Title",
+      key: "email",
+      label: "Email",
     },
     {
-      key: "category",
-      label: "Category",
-      render: (student: TStudent) => student.whatsappStatus ,
+      key: "gender",
+      label: "Gender",
     },
     {
-      key: "difficulty_level",
-      label: "Difficulty",
+      key: "batchNo",
+      label: "Batch",
+      render: (student: TStudent) => student.whatsappStatus,
+    },
+    {
+      key: "contactNumber",
+      label: "Number",
+    },
+    {
+      key: "profession",
+      label: "Profession",
+    },
+    {
+      key: "dateOfBirth",
+      label: "DOB",
       render: (student: TStudent) => (
-        <Badge variant={getDifficultyColor(student.contactNumber) as any}>
-          {student.contactNumber}
-        </Badge>
+        <span>{formatDOB(student?.dateOfBirth)}</span>
       ),
     },
     {
-      key: "questions_per_attempt",
-      label: "Questions",
-    },
-    {
-      key: "time_limit_minutes",
-      label: "Time (min)",
-    },
-    {
-      key: "passing_score",
-      label: "Pass %",
-    },
-    {
-      key: "is_published",
+      key: "studentStatus",
       label: "Status",
       render: (student: TStudent) => (
-        <Badge variant="success">{student.studentStatus}</Badge>
+        <StatusDropdown
+          value={student.studentStatus}
+          options={STUDENT_STATUSES}
+          variantMap={studentStatusVariantMap}
+          onChange={(newStatus) => updateStatus(newStatus, student?.id)}
+        />
+      ),
+    },
+    {
+      key: "whatsappStatus",
+      label: "WhatsApp",
+      render: (student: TStudent) => (
+        <StatusDropdown
+          value={student.whatsappStatus}
+          options={WHATSAPP_STATUSES}
+          variantMap={whatsappStatusVariantMap}
+          onChange={(newStatus) => updateWhatsapp(newStatus, student?.id)}
+        />
       ),
     },
     {
@@ -174,18 +239,12 @@ const Students = () => {
       label: "Actions",
       render: (student: TStudent) => (
         <div className="flex items-center space-x-2">
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => handleView(student?.id)}>
-            <Eye className="h-4 w-4" />
+          <Button variant="outline" size="sm" className="cursor-pointer">
+            <Link href={`/students/${student?.id}`}>
+              <Eye className="h-4 w-4" />
+            </Link>
           </Button>
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => handleEdit(student?.id)}>
-            <Edit className="h-4 w-4" />
-          </Button>
+          <CreateStudentModal student={student} from="edit" />
           <Button
             variant="outline"
             size="sm"
@@ -202,29 +261,24 @@ const Students = () => {
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-4">
           <Link
-            href="/content"
+            href="/analytics"
             className="p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition-all">
             <ArrowLeft className="w-5 h-5" />
           </Link>
           <div>
-            <h1 className="text-3xl font-bold">Quizzes</h1>
+            <h1 className="text-3xl font-bold">All Students</h1>
             <p className="text-muted-foreground">
-              Manage quiz content and settings
+              Manage All Students with their details
             </p>
           </div>
         </div>
-        <Button asChild>
-          <Link href="/content/quizzes/create">
-            <Plus className="h-4 w-4 mr-2" />
-           Create Student
-          </Link>
-        </Button>
+        <CreateStudentModal />
       </div>
 
       <DataTable
         data={students}
         columns={columns}
-        searchKey="quizzes"
+        searchKey="student"
         pagination={{
           ...pagination,
           onPageChange: handlePageChange,
@@ -235,18 +289,18 @@ const Students = () => {
 
       {/* Delete Confirmation Dialog */}
       <AlertDialog
-        open={!!quizToDelete}
-        onOpenChange={(open) => !open && setQuizToDelete(null)}>
+        open={!!studentDelete}
+        onOpenChange={(open) => !open && setStudentDelete(null)}>
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
             <AlertDialogDescription>
               This action cannot be undone. This will permanently delete the
-              quiz and all associated questions and data from our servers.
+              student and all associated data from our servers.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel onClick={() => setQuizToDelete(null)}>
+            <AlertDialogCancel onClick={() => setStudentDelete(null)}>
               Cancel
             </AlertDialogCancel>
             <AlertDialogAction
