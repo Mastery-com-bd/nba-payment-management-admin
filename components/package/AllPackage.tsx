@@ -179,9 +179,9 @@ export default function AllPackage() {
           </div>
         </div>
         <Button asChild>
-          <Link href="/content/quizzes/create">
+          <Link href="/package/create">
             <Plus className="h-4 w-4 mr-2" />
-            Create Student
+            Create Package
           </Link>
         </Button>
       </div>
