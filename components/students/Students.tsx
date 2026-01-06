@@ -9,7 +9,7 @@ import {
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { Button } from "../ui/button";
-import { ArrowLeft, Edit, Eye, Plus, Trash2 } from "lucide-react";
+import { ArrowLeft, Edit, Eye, Plus, Spotlight, Trash2 } from "lucide-react";
 import { Badge, BadgeProps } from "../ui/badge";
 import Link from "next/link";
 import { DataTable } from "../shared/DataTable";
@@ -34,6 +34,7 @@ import {
 } from "../ui/tooltip";
 import CreateStudentModal from "./CreateStudentModal";
 import StatusDropdown from "./StatusDropdown";
+import CreateFollowUp from "./CreateFollowUp";
 
 const STUDENT_STATUSES = [
   "ACTIVE",
@@ -55,7 +56,7 @@ const Students = () => {
     total: 0,
   });
 
-  const fetchQuizzes = async (page = 1, search = "") => {
+  const fetchStudents = async (page = 1, search = "") => {
     setLoading(true);
     try {
       const response = await studentApi.getAllStudents({
@@ -72,22 +73,22 @@ const Students = () => {
         }));
       }
     } catch (error) {
-      console.error("Failed to fetch quizzes:", error);
+      console.error("Failed to fetch students:", error);
     } finally {
       setLoading(false);
     }
   };
 
   useEffect(() => {
-    fetchQuizzes();
+    fetchStudents();
   }, []);
 
   const handlePageChange = (page: number) => {
-    fetchQuizzes(page);
+    fetchStudents(page);
   };
 
   const handleSearch = (query: string) => {
-    fetchQuizzes(1, query);
+    fetchStudents(1, query);
   };
 
   const handleDeleteClick = (id: string) => {
@@ -101,7 +102,7 @@ const Students = () => {
       const response = await studentApi.deleteStudent(studentDelete);
       if (response.success) {
         toast.success("student deleted successfully");
-        fetchQuizzes();
+        fetchStudents();
       } else {
         toast.error("Failed to delete student");
       }
@@ -119,7 +120,7 @@ const Students = () => {
       const response = await studentApi.updateStatus(data, id);
       if (response.success) {
         toast.success("student status updated successfully");
-        fetchQuizzes();
+        fetchStudents();
       } else {
         toast.error("Failed to update student status");
       }
@@ -135,7 +136,7 @@ const Students = () => {
       const response = await studentApi.updateWhatsAppStatus(data, id);
       if (response.success) {
         toast.success("student whatsapp status updated successfully");
-        fetchQuizzes();
+        fetchStudents();
       } else {
         toast.error("Failed to update student whatsapp status");
       }
@@ -247,9 +248,12 @@ const Students = () => {
           <Button
             variant="outline"
             size="sm"
+            className="cursor-pointer"
             onClick={() => handleDeleteClick(student?.id)}>
-            <Trash2 className="h-4 w-4" />
+            <Trash2 className="h-4 w-4 text-red-700" />
           </Button>
+
+          <CreateFollowUp studentId={student?.id} />
         </div>
       ),
     },
