@@ -1,20 +1,18 @@
 'use client';
 
 import { packageApi } from "@/lib/api/pacakge";
-import { TPackage } from "@/lib/types/pacakge.types";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
-import { 
-  Calendar, 
+import {  
   CheckCircle2, 
   Clock, 
   DollarSign, 
   Users, 
   ArrowLeft, 
-  Tag,
   ShieldCheck
 } from "lucide-react";
 import Link from "next/link";
+import { TPackage } from "@/types/pacakge.types";
 
 export default function PackageDetailsPage() {
   const [pkg, setPkg] = useState<TPackage | null>(null);

@@ -1,3 +1,4 @@
+import { TPaymentStatus } from "@/types/payment.types";
 import { TStudentStatus, TWhatsappStatus } from "@/types/student.types";
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
@@ -26,14 +27,18 @@ const publicFetch = async (url: string, options: RequestInit = {}) => {
   return response.json();
 };
 
-export const studentApi = {
+export const paymentApi = {
   // ==================== Public Quiz Routes ====================
 
-  async getAllStudents(params?: {
+  async getAllPayment(params?: {
     page?: number;
     limit?: number;
     searchTerm?: string;
+    paymentStatus?: string;
+    paymentMethod?: string;
+    paymentType?: string;
   }): Promise<any> {
+    console.log(params?.paymentStatus);
     const searchParams = new URLSearchParams();
     if (params?.page !== undefined) {
       searchParams.append("page", params.page.toString());
@@ -46,22 +51,32 @@ export const studentApi = {
     if (params?.searchTerm) {
       searchParams.append("searchTerm", params.searchTerm);
     }
+    if (params?.paymentStatus) {
+      searchParams.append("paymentStatus", params.paymentStatus);
+    }
+    if (params?.paymentMethod) {
+      searchParams.append("paymentMethod", params.paymentMethod);
+    }
+    if (params?.paymentType) {
+      searchParams.append("paymentType", params.paymentType);
+    }
     const query = searchParams.toString();
-    return publicFetch(`${API_BASE_URL}/student/${query ? `?${query}` : ""}`, {
+    console.log(query);
+    return publicFetch(`${API_BASE_URL}/payment/${query ? `?${query}` : ""}`, {
       method: "GET",
       credentials: "include",
     });
   },
 
-  async getASingleStudent(id: string): Promise<any> {
-    return publicFetch(`${API_BASE_URL}/student/${id}`, {
+  async getASinglePayment(id: string): Promise<any> {
+    return publicFetch(`${API_BASE_URL}/payment/${id}`, {
       method: "GET",
       credentials: "include",
     });
   },
 
-  async deleteStudent(id: string): Promise<any> {
-    const response = await fetch(`${API_BASE_URL}/student/${id}`, {
+  async deletePayment(id: string): Promise<any> {
+    const response = await fetch(`${API_BASE_URL}/payment/${id}`, {
       method: "DELETE",
       credentials: "include",
     });
@@ -69,9 +84,9 @@ export const studentApi = {
     return response.json();
   },
 
-  async updateStudent(id: string, data: FormData): Promise<any> {
+  async updatePayment(id: string, data: FormData): Promise<any> {
     try {
-      const res = await authFetch(`${API_BASE_URL}/student/${id}`, {
+      const res = await authFetch(`${API_BASE_URL}/payment/${id}`, {
         method: "PATCH",
         body: data, // let fetch handle Content-Type
         credentials: "include",
@@ -86,9 +101,9 @@ export const studentApi = {
     }
   },
 
-  async createStudent(data: FormData): Promise<any> {
+  async createPayment(data: FormData): Promise<any> {
     try {
-      const res = await authFetch(`${API_BASE_URL}/student`, {
+      const res = await authFetch(`${API_BASE_URL}/payment`, {
         method: "POST",
         body: data, // let fetch handle Content-Type
         credentials: "include",
@@ -102,12 +117,13 @@ export const studentApi = {
       throw err;
     }
   },
-  async updateStatus(
-    data: { studentStatus: TStudentStatus },
+
+  async updatePaymentStatus(
+    data: { paymentStatus: TPaymentStatus },
     id: string,
   ): Promise<any> {
     try {
-      const res = await authFetch(`${API_BASE_URL}/student/${id}/status`, {
+      const res = await authFetch(`${API_BASE_URL}/payment/${id}/status`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data), // let fetch handle Content-Type
@@ -120,41 +136,4 @@ export const studentApi = {
     }
   },
 
-  async updateWhatsAppStatus(
-    data: { whatsappStatus: TWhatsappStatus },
-    id: string,
-  ): Promise<any> {
-    try {
-      const res = await authFetch(
-        `${API_BASE_URL}/student/${id}/whatsapp-status`,
-        {
-          method: "PATCH",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(data), // let fetch handle Content-Type
-          credentials: "include",
-        },
-      );
-      return res;
-    } catch (err) {
-      console.error("Error creating student:", err);
-      throw err;
-    }
-  },
-
-  async deleteStatus(data: FormData): Promise<any> {
-    try {
-      const res = await authFetch(`${API_BASE_URL}/student`, {
-        method: "POST",
-        body: data, // let fetch handle Content-Type
-        credentials: "include",
-      });
-
-      // authFetch already returns parsed JSON, so no res.json()
-      // Just return it
-      return res;
-    } catch (err) {
-      console.error("Error creating student:", err);
-      throw err;
-    }
-  },
 };

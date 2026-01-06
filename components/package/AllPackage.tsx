@@ -16,7 +16,6 @@ export default function AllPackage() {
   const [loading, setLoading] = useState(true);
   const [refetch, setRefetch] = useState(false);
   const [packageToDelete, setPackageToDelete] = useState<string | null>(null);
-  const router = useRouter();
   const [pagination, setPagination] = useState({
     page: 1,
     limit: 10,

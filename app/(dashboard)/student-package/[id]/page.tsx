@@ -1,7 +1,6 @@
 'use client';
 
 import { studnetPackageApi } from "@/lib/api/AllStudnetPacakgeApi";
-import { TStudentPackage } from "@/lib/types/studentPacakges";
 import {
     ArrowLeft,
     Calendar,
@@ -21,6 +20,7 @@ import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/Card";
+import { TStudentPackage } from "@/types/studentPacakges";
 
 export default function StudentPackagesDetails() {
     const [data, setData] = useState<TStudentPackage | null>(null);

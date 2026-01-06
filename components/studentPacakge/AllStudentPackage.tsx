@@ -200,7 +200,7 @@ export default function AllStudentPackage() {
           </div>
         </div>
         <Button asChild>
-          <Link href="/package/create">
+          <Link href="/student-package/create">
             <Plus className="h-4 w-4 mr-2" />
             New Enrollment
           </Link>
