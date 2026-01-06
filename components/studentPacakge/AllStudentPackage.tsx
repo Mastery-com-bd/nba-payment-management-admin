@@ -11,6 +11,7 @@ import { DataTable } from "../shared/DataTable";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "../ui/alert-dialog";
 import { Button } from "../ui/button";
 import { TStudentPackage } from "@/types/studentPacakges";
+import { EditStudentPackageDialog } from "./EditStudentPackage";
 
 export default function AllStudentPackage() {
   const [packages, setPackages] = useState<TStudentPackage[]>([]);
@@ -57,7 +58,7 @@ export default function AllStudentPackage() {
   const confirmDelete = async () => {
     if (!packageToDelete) return;
     try {
-      const response = await packageApi.deletePackage(packageToDelete);
+      const response = await studnetPackageApi.deleteStudentPackage(packageToDelete);
       if (response.success) {
         toast.success("Enrollment deleted successfully");
         fetchPackages();
@@ -167,8 +168,8 @@ export default function AllStudentPackage() {
               <Eye className="h-4 w-4" />
             </Button>
           </Link>
-          {/* EditPackageDialog এ row pass করা হচ্ছে */}
-          <EditPackageDialog pack={row as any} setRefetch={setRefetch} />
+          {/* EditStudentPackageDialog এ row pass করা হচ্ছে */}
+          <EditStudentPackageDialog pack={row} setRefetch={setRefetch} />
           <Button
             variant="outline"
             size="sm"

@@ -72,9 +72,9 @@ export const studnetPackageApi = {
       };
     }
   },
-  async updatePackage(id: string, data: any) {
+  async updateStudentPackage(id: string, data: any) {
     try {
-      const res = await studentPackageFetch(`${API_BASE_URL}/package/${id}`, {
+      const res = await studentPackageFetch(`${API_BASE_URL}/student-package/${id}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data),
@@ -89,9 +89,9 @@ export const studnetPackageApi = {
       };
     }
   },
- async deletePackage(id: string) {
+ async deleteStudentPackage(id: string) {
   try {
-    const res = await studentPackageFetch(`${API_BASE_URL}/package/${id}`, {
+    const res = await studentPackageFetch(`${API_BASE_URL}/student-package/${id}`, {
       method: "DELETE",
       credentials: "include",
     });

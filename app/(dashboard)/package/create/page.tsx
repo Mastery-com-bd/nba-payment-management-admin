@@ -32,7 +32,7 @@ const formSchema = z.object({
     packageStatus: z.enum(["ACTIVE", "INACTIVE", "EXPIRED"]),
     packageType: z.enum(["BASIC", "ADVANCED", "CONSULTANCY"]),
     packagePrice: z.string().min(0, "Price must be a positive number"),
-    consultancyType: z.enum(["SIXMONTHS", "ONEYEAR"]),
+    consultancyType: z.enum(["SIXMONTHS", "ONEYEAR"]).optional(),
     durationInMonths: z.string().min(1, "Minimum duration 1 month"),
 });
 
@@ -41,7 +41,7 @@ type PackageFormValues = z.infer<typeof formSchema>;
 
 export default function CreatePackagePage() {
     // 1. Initialize the form
-    const form = useForm<PackageFormValues>({
+    const form = useForm<PackageFormValues>({   
         resolver: zodResolver(formSchema),
         defaultValues: {
             name: "",
@@ -49,8 +49,8 @@ export default function CreatePackagePage() {
             packageStatus: "ACTIVE",
             packageType: "BASIC",
             packagePrice: "0",
-            consultancyType: "SIXMONTHS",
             durationInMonths: "6",
+            consultancyType: "SIXMONTHS",
         },
     });
 
@@ -78,7 +78,7 @@ export default function CreatePackagePage() {
             toast.error("An unexpected error occurred. Please try again.");
         }
     }
-
+    const isConsultancy = form.watch("packageType") === "CONSULTANCY";
     return (
         <div className="max-w-2xl mx-auto p-8 border rounded-xl bg-card shadow-sm mt-10">
             <div className="mb-8 text-center">
@@ -211,9 +211,9 @@ export default function CreatePackagePage() {
                         control={form.control}
                         name="consultancyType"
                         render={({ field }) => (
-                            <FormItem>
+                            <FormItem >
                                 <FormLabel>Consultancy Type</FormLabel>
-                                <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                <Select onValueChange={field.onChange} defaultValue={field.value} disabled={!isConsultancy}>
                                     <FormControl>
                                         <SelectTrigger>
                                             <SelectValue placeholder="Select consultancy" />
