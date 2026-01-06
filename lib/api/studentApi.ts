@@ -53,6 +53,13 @@ export const studentApi = {
     });
   },
 
+  async getASTudentEnrolment(id: string): Promise<any> {
+    return publicFetch(`${API_BASE_URL}/student-package/student/${id}`, {
+      method: "GET",
+      credentials: "include",
+    });
+  },
+
   async getASingleStudent(id: string): Promise<any> {
     return publicFetch(`${API_BASE_URL}/student/${id}`, {
       method: "GET",
