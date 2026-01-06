@@ -51,7 +51,7 @@ export const studentSchema = z.object({
 type StudentFormData = z.infer<typeof studentSchema>;
 
 // ----------------- Modal Component -----------------
-const CreateStudentModal = ({
+const CreatePaymentModal = ({
   student,
   from,
 }: {
@@ -128,8 +128,7 @@ const CreateStudentModal = ({
         formData.append("studentImage", studentImage);
       }
       if (student) {
-        const res = await studentApi.updateStudent(student?.id ,formData);
-
+        const res = await studentApi.updateStudent(student?.id, formData);
         if (res?.success) {
           toast.success("Student updated successfully!");
           handleModalClose();
@@ -162,7 +161,7 @@ const CreateStudentModal = ({
         ) : (
           <Button className="cursor-pointer">
             <Plus className="h-4 w-4 mr-2 " />
-            Create Student
+            Create Payment
           </Button>
         )}
       </DialogTrigger>
@@ -385,4 +384,4 @@ const CreateStudentModal = ({
   );
 };
 
-export default CreateStudentModal;
+export default CreatePaymentModal;

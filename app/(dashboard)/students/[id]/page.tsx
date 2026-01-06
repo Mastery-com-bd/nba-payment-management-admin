@@ -1,7 +1,5 @@
 import StudentDetails from "@/components/studentDetails/StudentDetails";
 
-
-
 const STudentDetailsPage = async ({
   params,
 }: {

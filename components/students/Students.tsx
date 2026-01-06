@@ -101,7 +101,7 @@ const Students = () => {
     try {
       const response = await studentApi.deleteStudent(studentDelete);
       if (response.success) {
-        toast.success("Quiz deleted successfully");
+        toast.success("student deleted successfully");
         fetchQuizzes();
       } else {
         toast.error("Failed to delete student");
@@ -171,12 +171,12 @@ const Students = () => {
           <Tooltip>
             <TooltipTrigger asChild>
               <span className="block max-w-50 truncate cursor-pointer">
-                {studentData.fullName}
+                {studentData?.fullName}
               </span>
             </TooltipTrigger>
 
             <TooltipContent>
-              <p>{studentData.fullName}</p>
+              <p>{studentData?.fullName}</p>
             </TooltipContent>
           </Tooltip>
         </TooltipProvider>
