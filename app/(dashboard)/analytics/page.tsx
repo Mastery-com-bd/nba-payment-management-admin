@@ -73,7 +73,7 @@ export default function AnalyticsPage() {
         <Card className="p-6">
           <div>
             <p className="text-sm font-medium text-muted-foreground">
-              Total Users
+              Total Students
             </p>
             <p className="text-2xl font-bold">
               {loading ? "..." : analytics?.summary.totalUsers || 0}
@@ -83,7 +83,7 @@ export default function AnalyticsPage() {
         <Card className="p-6">
           <div>
             <p className="text-sm font-medium text-muted-foreground">
-              Total Quizzes
+              Total Packages
             </p>
             <p className="text-2xl font-bold">
               {loading ? "..." : analytics?.summary.totalQuizzes || 0}
@@ -93,7 +93,7 @@ export default function AnalyticsPage() {
         <Card className="p-6">
           <div>
             <p className="text-sm font-medium text-muted-foreground">
-              Total Questions
+              Total Enrollments
             </p>
             <p className="text-2xl font-bold">
               {loading ? "..." : analytics?.summary.totalQuestions || 0}
@@ -103,7 +103,7 @@ export default function AnalyticsPage() {
         <Card className="p-6">
           <div>
             <p className="text-sm font-medium text-muted-foreground">
-              Completed Attempts
+              Total Payments
             </p>
             <p className="text-2xl font-bold">
               {loading ? "..." : analytics?.summary.completedAttempts || 0}
@@ -191,7 +191,11 @@ export default function AnalyticsPage() {
                       }}
                     />
                     <Legend />
-                    <Bar dataKey="active" fill="#60A5FA" radius={[8, 8, 0, 0]} />
+                    <Bar
+                      dataKey="active"
+                      fill="#60A5FA"
+                      radius={[8, 8, 0, 0]}
+                    />
                     <Bar dataKey="new" fill="#FB923C" radius={[8, 8, 0, 0]} />
                   </BarChart>
                 </ResponsiveContainer>
