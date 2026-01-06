@@ -38,7 +38,6 @@ export const paymentApi = {
     paymentMethod?: string;
     paymentType?: string;
   }): Promise<any> {
-    console.log(params?.paymentStatus);
     const searchParams = new URLSearchParams();
     if (params?.page !== undefined) {
       searchParams.append("page", params.page.toString());
@@ -61,7 +60,7 @@ export const paymentApi = {
       searchParams.append("paymentType", params.paymentType);
     }
     const query = searchParams.toString();
-    console.log(query);
+
     return publicFetch(`${API_BASE_URL}/payment/${query ? `?${query}` : ""}`, {
       method: "GET",
       credentials: "include",
@@ -135,5 +134,4 @@ export const paymentApi = {
       throw err;
     }
   },
-
 };

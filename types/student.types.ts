@@ -39,3 +39,30 @@ export type TStudent = {
     followUps: number;
   };
 };
+type TPackageStatus = "ACTIVE" | "INACTIVE" | "EXPIRED";
+type TPackageType = "BASIC" | "ADVANCED" | "CONSULTANCY";
+
+export type TStudentEnrollment = {
+  id: string;
+  studentId: string;
+  packageId: string;
+  discount: number;
+  dueAmount: number;
+  totalPayable: number;
+  enrollmentDate: string;
+  status: TPackageStatus;
+  createdAt: string;
+  updatedAt: string;
+  package: {
+    id: string;
+    name: string;
+    description: string;
+    packageStatus: TPackageStatus;
+    packageType: TPackageType;
+    packagePrice: number;
+    consultancyType: "SIXMONTHS" | "ONEYEAR"; // extend if needed
+    durationInMonths: number;
+    createdAt: string;
+    updatedAt: string;
+  };
+};

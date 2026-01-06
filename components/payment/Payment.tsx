@@ -43,37 +43,47 @@ import { Label } from "../ui/label";
 import { TStudent } from "@/types/student.types";
 import { studentApi } from "@/lib/api/studentApi";
 import STudenTComboBoxProps from "./STudenTComboBoxProps";
+import EnrollMentComboBox from "./EnrollMentComboBox";
 
 type TPagination = {
   page: number;
   limit: number;
   total: number;
+  paymentStatus?: TPaymentStatus;
   paymentMethod?: TPaymentMethod;
   paymentType?: TPaymentType;
 };
 
 const Payment = () => {
-  const [payments, setPayments] = useState<TPayment[]>([]);
   const [selectedStudentId, setSelectedStudentId] = useState("");
+  const [selectedEnrolment, setSelectedEnrolment] = useState("");
+
+  const [payments, setPayments] = useState<TPayment[]>([]);
   const [loading, setLoading] = useState(true);
-  const [paymentDelete, setPaymentDelete] = useState<string | null>(null);
-  const [statusFilter, setStatusFilter] = useState<TPaymentStatus | "">("");
-  const [methodFilter, setMethodFilter] = useState<TPaymentMethod | "">("");
-  const [typeFilter, setTypeFilter] = useState<TPaymentType | "">("");
   const [pagination, setPagination] = useState<TPagination>({
     page: 1,
     limit: 10,
     total: 0,
   });
+  const [paymentDelete, setPaymentDelete] = useState<string | null>(null);
 
-  const fetchQuizzes = async (page = 1, paymentStatus = "") => {
+  const [statusFilter, setStatusFilter] = useState<TPaymentStatus | "">("");
+  const [methodFilter, setMethodFilter] = useState<TPaymentMethod | "">("");
+  const [typeFilter, setTypeFilter] = useState<TPaymentType | "">("");
+  const [searchTerm, setSearchTerm] = useState("");
+
+  const fetchPayments = async (page = 1) => {
     setLoading(true);
     try {
       const response = await paymentApi.getAllPayment({
         page,
         limit: pagination.limit,
-        paymentStatus: paymentStatus || undefined,
+        searchTerm: searchTerm || undefined,
+        paymentStatus: statusFilter || undefined,
+        paymentMethod: methodFilter || undefined,
+        paymentType: typeFilter || undefined,
       });
+
       if (response?.success) {
         setPayments(response?.data);
         setPagination((prev) => ({
@@ -82,23 +92,20 @@ const Payment = () => {
           total: response?.meta?.total || 0,
         }));
       }
-    } catch (error) {
-      console.error("Failed to fetch quizzes:", error);
+    } catch (err) {
+      console.error("Failed to fetch payments", err);
     } finally {
       setLoading(false);
     }
   };
 
+  // ---------------- EFFECT ----------------
   useEffect(() => {
-    fetchQuizzes();
-  }, []);
+    fetchPayments();
+  }, [statusFilter, methodFilter, typeFilter, searchTerm]);
 
   const handlePageChange = (page: number) => {
-    fetchQuizzes(page);
-  };
-
-  const handleStatusChange = (query: string) => {
-    fetchQuizzes(1, query);
+    fetchPayments(page);
   };
 
   const handleDeleteClick = (id: string) => {
@@ -112,7 +119,7 @@ const Payment = () => {
       const response = await paymentApi.deletePayment(paymentDelete);
       if (response.success) {
         toast.success("payment deleted successfully");
-        fetchQuizzes();
+        fetchPayments();
       } else {
         toast.error("Failed to delete payment");
       }
@@ -124,7 +131,33 @@ const Payment = () => {
     }
   };
 
-  console.log(selectedStudentId);
+  const handleStatusChange = (status: TPaymentStatus | "") => {
+    setPagination((prev) => ({ ...prev, page: 1 })); // reset page
+    setStatusFilter(status);
+  };
+
+  const handleMethodChange = (method: TPaymentMethod | "") => {
+    setPagination((prev) => ({ ...prev, page: 1 }));
+    setMethodFilter(method);
+  };
+
+  const handleTypeChange = (type: TPaymentType | "") => {
+    setPagination((prev) => ({ ...prev, page: 1 }));
+    setTypeFilter(type);
+  };
+
+  const handleSearch = (query: string) => {
+    setPagination((prev) => ({ ...prev, page: 1 }));
+    setSearchTerm(query);
+  };
+
+  const handleReset = () => {
+    setStatusFilter("");
+    setMethodFilter("");
+    setTypeFilter("");
+    setSearchTerm("");
+    setPagination({ page: 1, limit: 10, total: 0 });
+  };
 
   const columns = [
     {
@@ -134,9 +167,11 @@ const Payment = () => {
         <TooltipProvider>
           <Tooltip>
             <TooltipTrigger asChild>
-              <span className="block max-w-50 truncate cursor-pointer">
-                {<span>{payment?.student?.fullName}</span>}
-              </span>
+              <Link href={`/students/${payment?.student?.id}`}>
+                <span className="block max-w-50 truncate cursor-pointer">
+                  {<span>{payment?.student?.fullName}</span>}
+                </span>
+              </Link>
             </TooltipTrigger>
             <TooltipContent>
               <p>{payment?.student?.fullName}</p>
@@ -152,9 +187,11 @@ const Payment = () => {
         <TooltipProvider>
           <Tooltip>
             <TooltipTrigger asChild>
-              <span className="block max-w-50 truncate cursor-pointer">
-                {payment?.studentPackage?.package?.name}
-              </span>
+              <Link href={`/package/${payment?.studentPackage?.package?.id}`}>
+                <span className="block max-w-50 truncate cursor-pointer">
+                  {payment?.studentPackage?.package?.name}
+                </span>
+              </Link>
             </TooltipTrigger>
             <TooltipContent>
               <p>{payment?.studentPackage?.package?.name}</p>
@@ -174,6 +211,29 @@ const Payment = () => {
     {
       key: "paymentType",
       label: "Payment Type",
+    },
+    {
+      key: "amount",
+      label: "Amount",
+    },
+    {
+      key: "discount",
+      label: "Discount",
+      render: (payment: TPayment) => <p>{payment?.studentPackage?.discount}</p>,
+    },
+    {
+      key: "Due",
+      label: "Due Amount",
+      render: (payment: TPayment) => (
+        <p>{payment?.studentPackage?.dueAmount}</p>
+      ),
+    },
+    {
+      key: "totalPayable",
+      label: "Payable",
+      render: (payment: TPayment) => (
+        <p>{payment?.studentPackage?.totalPayable}</p>
+      ),
     },
     {
       key: "transactionId",
@@ -231,7 +291,15 @@ const Payment = () => {
           value={selectedStudentId}
           onChange={setSelectedStudentId}
         />
-        <CreatePaymentModal />
+        <EnrollMentComboBox
+          value={selectedEnrolment}
+          onChange={setSelectedEnrolment}
+          studentId={selectedStudentId}
+        />
+        <CreatePaymentModal
+          selectedStudentId={selectedStudentId}
+          selectedEnrolment={selectedEnrolment}
+        />
       </div>
       <div className="flex items-end gap-6">
         {/* payment status */}
@@ -257,8 +325,7 @@ const Payment = () => {
                   <DropdownMenuItem
                     key={status}
                     onClick={() => {
-                      setStatusFilter(status as TPaymentStatus);
-                      handleStatusChange(status);
+                      handleStatusChange(status as TPaymentStatus);
                     }}>
                     {statusFilter === status && (
                       <Check className="mr-2 h-4 w-4" />
@@ -271,7 +338,7 @@ const Payment = () => {
           </DropdownMenu>
         </div>
         {/* payment method */}
-        {/* <div className="flex flex-col gap-2">
+        <div className="flex flex-col gap-2">
           <Label>Filter by Method</Label>
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
@@ -303,13 +370,7 @@ const Payment = () => {
                 <DropdownMenuItem
                   key={method}
                   onClick={() => {
-                    setPagination((prev) => ({
-                      ...prev,
-                      page: 1, // optional: reset page when filter changes
-                      paymentMethod: method as TPaymentMethod,
-                    }));
-                    setMethodFilter(method as TPaymentMethod);
-                    handleStatusChange(method);
+                    handleMethodChange(method as TPaymentMethod);
                   }}>
                   {methodFilter === method && (
                     <Check className="mr-2 h-4 w-4" />
@@ -319,9 +380,9 @@ const Payment = () => {
               ))}
             </DropdownMenuContent>
           </DropdownMenu>
-        </div> */}
+        </div>
         {/* payment type */}
-        {/* <div className="flex flex-col gap-2">
+        <div className="flex flex-col gap-2">
           <Label>Filter by type</Label>
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
@@ -342,13 +403,7 @@ const Payment = () => {
                   <DropdownMenuItem
                     key={type}
                     onClick={() => {
-                      setPagination((prev) => ({
-                        ...prev,
-                        page: 1, // optional: reset page when filter changes
-                        paymentType: type as TPaymentType,
-                      }));
-                      setTypeFilter(type as TPaymentType);
-                      handleStatusChange(type);
+                      handleTypeChange(type as TPaymentType);
                     }}>
                     {typeFilter === type && <Check className="mr-2 h-4 w-4" />}
                     {type}
@@ -357,21 +412,15 @@ const Payment = () => {
               )}
             </DropdownMenuContent>
           </DropdownMenu>
-        </div> */}
-        {/* <div>
+        </div>
+        <div>
           <Button
             variant="ghost"
             className="w-40 justify-between"
-            onClick={() =>
-              setPagination({
-                page: 1,
-                limit: 10,
-                total: 0,
-              })
-            }>
+            onClick={() => handleReset()}>
             Reset
           </Button>
-        </div> */}
+        </div>
       </div>
       <DataTable
         data={payments}
@@ -381,7 +430,7 @@ const Payment = () => {
           ...pagination,
           onPageChange: handlePageChange,
         }}
-        onSearch={handleStatusChange}
+        onSearch={handleSearch}
         loading={loading}
       />
       ''

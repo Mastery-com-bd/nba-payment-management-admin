@@ -27,6 +27,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/Card";
 import { studentApi } from "@/lib/api/studentApi";
 import { TStudent } from "@/types/student.types";
+import Image from "next/image";
 
 // ----------------- Schema -----------------
 export const studentSchema = z.object({
@@ -128,7 +129,7 @@ const CreateStudentModal = ({
         formData.append("studentImage", studentImage);
       }
       if (student) {
-        const res = await studentApi.updateStudent(student?.id ,formData);
+        const res = await studentApi.updateStudent(student?.id, formData);
 
         if (res?.success) {
           toast.success("Student updated successfully!");
@@ -241,7 +242,10 @@ const CreateStudentModal = ({
                   />
                   {preview && (
                     <div className="relative">
-                      <img
+                      <Image
+                        height={50}
+                        width={50}
+                        alt="file"
                         src={preview}
                         className="w-20 h-20 rounded object-cover border"
                       />
