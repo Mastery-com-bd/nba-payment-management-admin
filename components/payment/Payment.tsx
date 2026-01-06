@@ -453,7 +453,7 @@ const Payment = () => {
             <AlertDialogAction
               onClick={confirmDelete}
               className="bg-destructive text-destructive-foreground hover:bg-destructive/90">
-              Delete Quiz
+              Delete Payment
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

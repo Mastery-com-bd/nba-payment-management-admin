@@ -234,7 +234,7 @@ const FollowUp = () => {
               <AlertDialogAction
                 onClick={confirmDelete}
                 className="bg-destructive text-destructive-foreground hover:bg-destructive/90">
-                Delete Quiz
+                Delete FollowUp
               </AlertDialogAction>
             </AlertDialogFooter>
           </AlertDialogContent>

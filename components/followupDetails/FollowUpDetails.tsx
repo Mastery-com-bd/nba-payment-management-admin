@@ -82,21 +82,21 @@ const FollowUpDetails = ({id}: {id: string}) => {
          const [loading, setLoading] = useState(true);
        
          useEffect(() => {
-           const fetchQuiz = async () => {
+           const fetchFollowUp = async () => {
              try {
                const response = await followUpApi.getASingleFollowUps(id);
                if (response.success && response.data) {
                  setFollowUp(response?.data);
                }
              } catch (error) {
-               console.error("Failed to fetch quiz:", error);
+               console.error("Failed to fetch follow up:", error);
              } finally {
                setLoading(false);
              }
            };
-       
+
            if (id) {
-             fetchQuiz();
+             fetchFollowUp();
            }
          }, [id]);
        

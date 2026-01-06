@@ -18,21 +18,21 @@ const StudentDetails = ({id}: {id:string}) => {
      const [loading, setLoading] = useState(true);
    
      useEffect(() => {
-       const fetchQuiz = async () => {
+       const fetchStudent = async () => {
          try {
            const response = await studentApi.getASingleStudent(id);
            if (response.success && response.data) {
              setStudent(response?.data);
            }
          } catch (error) {
-           console.error("Failed to fetch quiz:", error);
+           console.error("Failed to fetch student:", error);
          } finally {
            setLoading(false);
          }
        };
-   
+
        if (id) {
-         fetchQuiz();
+         fetchStudent();
        }
      }, [id]);
    

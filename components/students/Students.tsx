@@ -309,7 +309,7 @@ const Students = () => {
             <AlertDialogAction
               onClick={confirmDelete}
               className="bg-destructive text-destructive-foreground hover:bg-destructive/90">
-              Delete Quiz
+              Delete Student
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

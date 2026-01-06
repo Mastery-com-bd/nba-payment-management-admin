@@ -1,3 +1,6 @@
+import { TEnrollment } from "./package.types";
+import { TStudent } from "./student.types";
+
 export type TPaymentMethod =
   | "CREDIT_CARD"
   | "DEBIT_CARD"
@@ -15,13 +18,11 @@ export type TPaymentStatus =
   | "FAILED"
   | "REFUND";
 
-
 export type TPaymentType =
   | "FULLPAYMENT"
   | "INSTALLMENT"
   | "SUBSCRIPTION"
   | "BOOKING";
-
 
 export type TPaymentStudent = {
   id: string;
@@ -63,6 +64,6 @@ export type TPayment = {
   paymentVerificationFile: string | null;
   createdAt: string;
   updatedAt: string;
-  student: TPaymentStudent;
-  studentPackage: TStudentPackage;
+  student: TStudent;
+  studentPackage: TEnrollment;
 };
