@@ -49,7 +49,6 @@ const Students = () => {
   const [students, setStudents] = useState<TStudent[]>([]);
   const [loading, setLoading] = useState(true);
   const [studentDelete, setStudentDelete] = useState<string | null>(null);
-  const router = useRouter();
   const [pagination, setPagination] = useState({
     page: 1,
     limit: 10,

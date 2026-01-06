@@ -40,18 +40,21 @@ import {
   DropdownMenuTrigger,
 } from "../ui/dropdown-menu";
 import { Label } from "../ui/label";
-
+import { TStudent } from "@/types/student.types";
+import { studentApi } from "@/lib/api/studentApi";
+import STudenTComboBoxProps from "./STudenTComboBoxProps";
 
 type TPagination = {
   page: number;
   limit: number;
   total: number;
   paymentMethod?: TPaymentMethod;
-  paymentType?:TPaymentType
+  paymentType?: TPaymentType;
 };
 
 const Payment = () => {
-  const [payments, setPayments] = useState([]);
+  const [payments, setPayments] = useState<TPayment[]>([]);
+  const [selectedStudentId, setSelectedStudentId] = useState("");
   const [loading, setLoading] = useState(true);
   const [paymentDelete, setPaymentDelete] = useState<string | null>(null);
   const [statusFilter, setStatusFilter] = useState<TPaymentStatus | "">("");
@@ -120,6 +123,8 @@ const Payment = () => {
       setPaymentDelete(null);
     }
   };
+
+  console.log(selectedStudentId);
 
   const columns = [
     {
@@ -222,6 +227,10 @@ const Payment = () => {
             </p>
           </div>
         </div>
+        <STudenTComboBoxProps
+          value={selectedStudentId}
+          onChange={setSelectedStudentId}
+        />
         <CreatePaymentModal />
       </div>
       <div className="flex items-end gap-6">
