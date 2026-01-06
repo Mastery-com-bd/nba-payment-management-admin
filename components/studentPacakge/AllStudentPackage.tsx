@@ -10,7 +10,7 @@ import { EditPackageDialog } from "../package/EditPackage";
 import { DataTable } from "../shared/DataTable";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "../ui/alert-dialog";
 import { Button } from "../ui/button";
-import { TStudentPackage } from "@/lib/types/studentPacakges";
+import { TStudentPackage } from "@/types/studentPacakges";
 
 export default function AllStudentPackage() {
   const [packages, setPackages] = useState<TStudentPackage[]>([]);

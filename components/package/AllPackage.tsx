@@ -1,6 +1,5 @@
 'use client';
 import { packageApi } from "@/lib/api/pacakge";
-import { TPackage } from "@/lib/types/pacakge.types";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
@@ -10,6 +9,7 @@ import { ArrowLeft, Eye, Plus, Trash } from "lucide-react";
 import { Button } from "../ui/button";
 import { DataTable } from "../shared/DataTable";
 import { EditPackageDialog } from "./EditPackage";
+import { TPackage } from "@/types/pacakge.types";
 
 export default function AllPackage() {
   const [packages, setPackages] = useState<TPackage[]>([]);
