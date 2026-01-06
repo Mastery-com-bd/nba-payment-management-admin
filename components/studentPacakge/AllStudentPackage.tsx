@@ -139,7 +139,7 @@ export default function AllStudentPackage() {
         <span
           className={`px-2 py-1 rounded-full text-[10px] font-bold ${row.status === "ACTIVE"
               ? "bg-green-100 text-green-700"
-              : row.status === "EXPIRED"
+              : row.status === "INACTIVE"
                 ? "bg-orange-100 text-orange-700"
                 : "bg-red-100 text-red-700"
             }`}

@@ -14,13 +14,13 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import { Textarea } from "../ui/textarea"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select"
 import { useEffect, useState } from "react"
-import { TPackage } from "@/lib/types/pacakge.types"
 import { packageApi } from "@/lib/api/pacakge"
 import { Pencil } from "lucide-react"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import z from "zod"
 import { toast } from "sonner"
+import { TPackage } from "@/types/pacakge.types"
 // Zod Schema for validation
 const formSchema = z.object({
     name: z.string().min(2, "Name must be at least 2 characters"),

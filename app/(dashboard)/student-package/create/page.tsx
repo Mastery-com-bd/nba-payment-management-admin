@@ -47,7 +47,7 @@ export default function CreatePackagePage() {
     const [students, setStudents] = useState<TStudent[]>([]);
     const [studentLoading, setStudentLoading] = useState(true);
     const [studentSearch, setStudentSearch] = useState("");
-
+    //=================== package fetch korar jonno ===================
     const [packages, setPackages] = useState<TStudent[]>([]);
     const [packageLoading, setPackageLoading] = useState(true);
     const [packageSearch, setPackageSearch] = useState("");
@@ -145,7 +145,7 @@ export default function CreatePackagePage() {
                 </p>
             </div>
             <Form {...form}>
-                <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">                  
+                <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         {/* Package Type */}
