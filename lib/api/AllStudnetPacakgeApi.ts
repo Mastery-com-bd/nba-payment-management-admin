@@ -47,15 +47,15 @@ export const studnetPackageApi = {
       credentials: "include",
     });
   },
-  async getPackageById(id: string): Promise<any> {
-    return publicFetch(`${API_BASE_URL}/package/${id}`, {
+  async getStudentPackageById(id: string): Promise<any> {
+    return publicFetch(`${API_BASE_URL}/student-package/${id}`, {
       method: "GET",
       credentials: "include",
     });
   },
-  async createPackage(data: any) {
+  async createStudentPackage(data: any) {
     try {
-      const res = await studentPackageFetch(`${API_BASE_URL}/package/`, {
+      const res = await studentPackageFetch(`${API_BASE_URL}/student-package/`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data),

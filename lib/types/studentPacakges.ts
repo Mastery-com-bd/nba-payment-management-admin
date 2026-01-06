@@ -5,6 +5,17 @@ export interface IStudent {
   email: string;
   batchNo: string;
   contactNumber: string;
+  studentStatus: "IRREGULAR" | "REGULAR" | "BLOCKED" | "FAKED";
+  whatsappStatus: "ACTIVE" | "INACTIVE"| "DONE";
+  studentImage: string | null;
+  address: string;
+  createdAt: string;
+  updatedAt: string;
+  profession: string;
+  bio: string;
+  gender: "MALE" | "FEMALE";
+  dateOfBirth: string;
+  isDeleted: boolean;
 }
 
 // Package detailed information interface
@@ -12,7 +23,7 @@ export interface IPackage {
   id: string;
   name: string;
   description: string;
- packageStatus: "ACTIVE" | "INACTIVE";
+  packageStatus: "ACTIVE" | "INACTIVE";
   packageType: "BASIC" | "ADVANCED" | "CONSULTANCY";
   packagePrice: number;
   consultancyType: "SIXMONTHS" | "ONEYEAR";
@@ -25,15 +36,22 @@ export interface IPackage {
 export interface IPayment {
   id: string;
   amount: number;
-  paymentStatus:   
+  paymentMethod: string;
+  paymentStatus:
   | "PENDING"
   | "PARTIAL"
   | "COMPLETED"
   | "FAILED"
-  | "REFUND"
-  paymentMethod: string;
+  | "REFUND";
   createdAt: string;
+  paymentType: "BOOKING" | "MONTHLY" | "FINAL";
+  transactionId: string;
+  studentId: string;
+  studentPackageId: string;
+  paymentVerificationFile: string | null;
+  updatedAt: string;
 }
+  
 
 // Main Student-Package interface
 export interface TStudentPackage {
@@ -61,3 +79,5 @@ export interface TStudentPackage {
 export interface TStudentPackagesResponse {
   data: TStudentPackage[];
 }
+
+// ============================ Student package types end ============================

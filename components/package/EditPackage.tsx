@@ -71,7 +71,7 @@ export function EditPackageDialog({ pack, setRefetch }: { pack: TPackage, setRef
     return (
         <Dialog>
             <DialogTrigger asChild>
-                <Button variant="outline"><Pencil /></Button>
+                <Button variant={"outline"} ><Pencil /> </Button>
             </DialogTrigger>
             <DialogContent className="sm:max-w-[425px]">
                 <DialogHeader>

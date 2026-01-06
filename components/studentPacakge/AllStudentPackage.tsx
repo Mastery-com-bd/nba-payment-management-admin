@@ -172,7 +172,7 @@ export default function AllStudentPackage() {
           <Button
             variant="outline"
             size="sm"
-            className="h-8 w-8 p-0 border-red-200 hover:bg-red-50"
+            className="hover:bg-red-50"
             onClick={() => setPackageToDelete(row.id)}
           >
             <Trash className="h-4 w-4 text-red-600" />
